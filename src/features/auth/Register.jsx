@@ -1,16 +1,24 @@
 // import { Radio } from '@fattureincloud/fic-design-system'
 import { Button, InputText } from "@fattureincloud/fic-design-system";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSessionStorage } from "react-use";
 // import { useFetchApi } from "./hooks/useFetchApi";
 import { useFetchApi } from "../../hooks/useFetchApi.ts";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { userRegister } from "./authSlice.js";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const { status, userInfo, error } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
   const [sessionToken, setSessionToken] = useSessionStorage("sessionToken", "");
   const formdata = new FormData();
 
-  const { isLoading, data, error, fetchApi } = useFetchApi();
+  // const { isLoading, data, error, fetchApi } = useFetchApi();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,9 +30,14 @@ const Register = () => {
     formdata.append("password", password);
     formdata.append("first_name", firstName);
     formdata.append("last_name", lastName);
-    fetchApi("/auth/register", formdata, "POST");
+    // fetchApi("/auth/register", formdata, "POST");
+    dispatch(userRegister(formdata));
     // console.log(response.json());
   };
+
+  useEffect(() => {
+    if (status === "succeeded") navigate("/");
+  }, [navigate, status]);
 
   return (
     <>
@@ -80,7 +93,12 @@ const Register = () => {
         status="normal"
         value={lastName}
       />
-      <Button text="Register" onClick={handleRegister}></Button>
+      <Button
+        text="Register"
+        isDisabled={status === "loading"}
+        isLoading={status === "loading"}
+        onClick={handleRegister}
+      ></Button>
     </>
   );
 };
