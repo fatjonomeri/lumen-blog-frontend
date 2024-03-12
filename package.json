@@ -13,9 +13,12 @@
   },
   "dependencies": {
     "@fattureincloud/fic-design-system": "^0.15.1",
+    "@reduxjs/toolkit": "^2.2.1",
     "@storybook/cli": "^7.6.17",
+    "axios": "^1.6.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
     "react-use": "^17.5.0",
     "storybook": "^7.6.17",
     "styled-components": "^6.1.8"

@@ -1,16 +1,16 @@
 import { useState } from "react";
 
-export const useFetchApi = (endpoint: string, body: FormData, method: string) => {
+export const useFetchApi = () => {
   const [data, setData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const base_url = "http://localhost:8081";
-  const url = base_url + endpoint;
 
-  const fetchApi = async () => {
+  const fetchApi = async (endpoint: string, body: FormData, method: string) => {
+    const url = base_url + endpoint
     setIsLoading(true);
-    await fetch(url, {
+    const result = await fetch(url, {
       method,
       body,
     })
@@ -19,8 +19,11 @@ export const useFetchApi = (endpoint: string, body: FormData, method: string) =>
         console.log("🚀 ~ .then ~ result:", result);
         setIsLoading(false);
         setData(result);
+        return result
       })
-      .catch((error) => setError(error));
+      .catch((error) => setError(error));  
+
+    return result
   };
 
   return {
