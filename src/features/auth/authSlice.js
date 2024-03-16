@@ -66,18 +66,6 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginSuccess(state, action) {
-      console.log("🚀 ~ loginSuccess ~ action:", action.payload.accessToken);
-      state.isAuthenticated = true;
-      state.accessToken = action.payload.accessToken;
-      //   setSessionToken(action.payload.accessToken);
-      sessionStorage.setItem("accessToken", action.payload.accessToken);
-    },
-    logoutSuccess(state) {
-      state.isAuthenticated = false;
-      state.accessToken = null;
-      sessionStorage.removeItem("accessToken");
-    },
     logout: (state) => {
       localStorage.removeItem("accessToken"); // deletes token from storage
       state.status = "idle";
@@ -88,6 +76,7 @@ const authSlice = createSlice({
     },
     setCredentials: (state, { payload }) => {
       state.userInfo = payload;
+      state.isAuthenticated = true;
     },
   },
   extraReducers(builder) {
@@ -108,8 +97,9 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(userLogin.fulfilled, (state, action) => {
+        console.log("🚀 ~ .addCase ~ action:", action);
         state.status = "succeeded";
-        state.userInfo = action.payload;
+        // state.userInfo = action.payload;
         state.accessToken = action.payload.access_token;
         state.isAuthenticated = true;
       })
@@ -120,6 +110,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginSuccess, logoutSuccess, logout, setCredentials } =
-  authSlice.actions;
+export const { logout, setCredentials } = authSlice.actions;
 export default authSlice.reducer;

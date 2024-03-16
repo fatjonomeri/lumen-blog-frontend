@@ -4,6 +4,7 @@ import Register from "./features/auth/Register";
 import Login from "./features/auth/Login";
 import { Route, Routes } from "react-router-dom";
 import Homepage from "./features/homepage/Homepage";
+
 function App() {
   return (
     <Routes>

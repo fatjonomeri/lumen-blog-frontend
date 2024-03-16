@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginSuccess } from "./authSlice";
 import { useFetchApi } from "../../hooks/useFetchApi";
 import { useSessionStorage } from "react-use";
 import { userLogin } from "./authSlice";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@fattureincloud/fic-design-system";
 
 const Login = () => {
   // const [sessionToken, setSessionToken] = useSessionStorage("accessToken", "");
@@ -41,7 +41,7 @@ const Login = () => {
     if (isAuthenticated) {
       navigate("/");
     }
-  }, [navigate, userInfo]);
+  }, [navigate, isAuthenticated]);
 
   return (
     <div>
@@ -49,7 +49,9 @@ const Login = () => {
         <>
           <h2>Login</h2>
           {error && <p>{error}</p>}
-          <form onSubmit={handleLogin}>
+          <form
+            onSubmit={handleLogin} //fic button no type="submit" ???
+          >
             <div>
               <label htmlFor="email">Email:</label>
               <input
@@ -68,7 +70,14 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <button type="submit">Login</button>
+            {/* <Button
+              // type="submit"
+              text="Login"
+              isDisabled={status === "loading"}
+              isLoading={status === "loading"}
+              onClick={handleLogin}
+            ></Button> */}
+            <button type="submit"></button>
           </form>
         </>
       )}
