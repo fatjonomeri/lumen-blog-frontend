@@ -13,28 +13,24 @@ const Header = () => {
   const { userInfo, isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  const [queryKey, setQueryKey] = useState(0);
-
   // automatically authenticate user if token is found
-  const { data, isFetching } = useGetUserDetailsQuery(
-    ["userDetails", queryKey],
-    {
-      // perform a refetch every 15mins
-      pollingInterval: 900000,
-    }
-  );
+  const { data, isFetching, refetch } = useGetUserDetailsQuery("userDetails", {
+    // perform a refetch every 15mins
+    pollingInterval: 900000,
+  });
 
   console.log(data);
 
   useEffect(() => {
+    refetch();
     console.log("dispatching credentials");
     if (data) dispatch(setCredentials(data));
   }, [data, dispatch]);
 
-  useEffect(() => {
-    // Update queryKey to trigger re-render
-    setQueryKey((prevKey) => prevKey + 1);
-  }, []);
+  // useEffect(() => {
+  //   // Update queryKey to trigger re-render
+  //   setQueryKey((prevKey) => prevKey + 1);
+  // }, []);
 
   console.log("header render");
   return (

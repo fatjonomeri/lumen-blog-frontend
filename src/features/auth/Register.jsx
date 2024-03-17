@@ -10,7 +10,9 @@ import { userRegister } from "./authSlice.js";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-  const { status, userInfo, error } = useSelector((state) => state.auth);
+  const { status, userInfo, error, isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -38,6 +40,12 @@ const Register = () => {
   useEffect(() => {
     if (status === "succeeded") navigate("/");
   }, [navigate, status]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [navigate, isAuthenticated]);
 
   return (
     <>
