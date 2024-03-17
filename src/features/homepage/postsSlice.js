@@ -14,17 +14,18 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   return response.data;
 });
 
-export const addNewPost = createAsyncThunk(
-  "posts/addNewPost",
-  async (initialPost) => {
-    const response = await axios.post(POSTS_URL, initialPost);
-    return response.data;
-  }
-);
+export const addNewPost = createAsyncThunk("posts/addNewPost", async (args) => {
+  const { body, accessToken } = args;
+  const response = await axios.post(POSTS_URL, body, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return response.data;
+});
 
 export const deletePost = createAsyncThunk("posts/deletePost", async (args) => {
   const { id, accessToken } = args;
-  console.log("🚀 ~ id:", id);
   try {
     const response = await axios.delete(`${POSTS_URL}/${id}`, {
       headers: {
@@ -36,6 +37,16 @@ export const deletePost = createAsyncThunk("posts/deletePost", async (args) => {
   } catch (err) {
     return err.message;
   }
+});
+
+export const updatePost = createAsyncThunk("posts/updatePost", async (args) => {
+  const { postIdToEdit: id, body, accessToken } = args;
+  const response = await axios.put(`${POSTS_URL}/${id}`, body, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return response.data;
 });
 
 const postsSlice = createSlice({
@@ -62,6 +73,16 @@ const postsSlice = createSlice({
       .addCase(deletePost.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.posts = state.posts.filter((post) => post.id !== action.payload);
+      })
+      .addCase(addNewPost.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.posts.push(action.payload);
+      })
+      .addCase(updatePost.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const { id } = action.payload;
+        const posts = state.posts.filter((post) => post.id !== id);
+        state.posts = [...posts, action.payload];
       });
   },
 });
