@@ -22,6 +22,22 @@ export const addNewPost = createAsyncThunk(
   }
 );
 
+export const deletePost = createAsyncThunk("posts/deletePost", async (args) => {
+  const { id, accessToken } = args;
+  console.log("🚀 ~ id:", id);
+  try {
+    const response = await axios.delete(`${POSTS_URL}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (response?.status === 200) return id;
+    return `${response?.status}: ${response?.statusText}`;
+  } catch (err) {
+    return err.message;
+  }
+});
+
 const postsSlice = createSlice({
   name: "posts",
   initialState,
@@ -39,6 +55,13 @@ const postsSlice = createSlice({
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+      })
+      .addCase(deletePost.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.posts = state.posts.filter((post) => post.id !== action.payload);
       });
   },
 });
