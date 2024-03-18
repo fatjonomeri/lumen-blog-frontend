@@ -28,13 +28,6 @@ const Login = () => {
     body.append("password", password);
 
     dispatch(userLogin(body));
-    // const loginData = await fetchApi("/auth/login", body, "POST");
-
-    // Dispatch login success action
-    // console.log(typeof loginData);
-    // const accessToken = JSON.parse(loginData);
-    // dispatch(loginSuccess({ accessToken: accessToken.access_token }));
-    // setSessionToken(accessToken.access_token);
   };
 
   useEffect(() => {

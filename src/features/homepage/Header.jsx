@@ -15,9 +15,7 @@ const Header = () => {
   );
   const dispatch = useDispatch();
 
-  // automatically authenticate user if token is found
   const { data, isFetching, refetch } = useGetUserDetailsQuery("userDetails", {
-    // perform a refetch every 15mins
     pollingInterval: 900000,
   });
 
@@ -27,18 +25,11 @@ const Header = () => {
     refetch();
     if (data) {
       dispatch(setCredentials(data));
-      console.log("dispatching credentials");
     } else if (!accessToken) {
       dispatch(logout());
     }
   }, [data, dispatch]);
 
-  // useEffect(() => {
-  //   // Update queryKey to trigger re-render
-  //   setQueryKey((prevKey) => prevKey + 1);
-  // }, []);
-
-  console.log("header render");
   return (
     <>
       {isAuthenticated ? (

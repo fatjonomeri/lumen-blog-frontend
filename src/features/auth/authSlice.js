@@ -15,7 +15,6 @@ export const userRegister = createAsyncThunk(
       };
       await axios.post(`${backendURL}/auth/register`, body, config);
     } catch (error) {
-      // return custom error message from backend if present
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
@@ -40,11 +39,9 @@ export const userLogin = createAsyncThunk(
         body,
         config
       );
-      // store user's token in local storage
       localStorage.setItem("accessToken", data.access_token);
       return data;
     } catch (error) {
-      // return custom error message from API if any
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {

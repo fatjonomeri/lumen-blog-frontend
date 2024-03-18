@@ -17,7 +17,7 @@ const Register = () => {
 
   const navigate = useNavigate();
 
-  const [sessionToken, setSessionToken] = useSessionStorage("sessionToken", "");
+  // const [sessionToken, setSessionToken] = useSessionStorage("sessionToken", "");
   const formdata = new FormData();
 
   // const { isLoading, data, error, fetchApi } = useFetchApi();
