@@ -6,7 +6,7 @@ import { useSessionStorage } from "react-use";
 import { useFetchApi } from "../../hooks/useFetchApi.ts";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { userRegister } from "./authSlice.js";
+import { userLogin, userRegister } from "./authSlice.js";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
@@ -33,7 +33,14 @@ const Register = () => {
     formdata.append("first_name", firstName);
     formdata.append("last_name", lastName);
     // fetchApi("/auth/register", formdata, "POST");
-    dispatch(userRegister(formdata));
+
+    const formdataLogin = new FormData();
+    formdataLogin.append("email", email);
+    formdataLogin.append("password", password);
+
+    dispatch(userRegister(formdata)).then(() =>
+      dispatch(userLogin(formdataLogin))
+    );
     // console.log(response.json());
   };
 
