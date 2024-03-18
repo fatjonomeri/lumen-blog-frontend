@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewPost, deletePost, fetchPosts, updatePost } from "./postsSlice";
 import Modal from "@mui/material/Modal";
+import { useNavigate } from "react-router-dom";
 
 const PostList = () => {
   const { status, posts, error } = useSelector((state) => state.posts);
@@ -10,6 +11,7 @@ const PostList = () => {
     (state) => state.auth
   );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -55,7 +57,7 @@ const PostList = () => {
         ></Button>
       )}
       {posts.map((post) => (
-        <article key={post.id}>
+        <article key={post.id} style={{ border: "1px solid grey" }}>
           <h2>{post.title}</h2>
           <p>{post.text.substring(0, 75)}...</p>
           <p>{post.comments_count} comments</p>
@@ -74,7 +76,10 @@ const PostList = () => {
               ></Button>
             </>
           )}
-          <Button text="Details"></Button>
+          <Button
+            text="Details"
+            onClick={() => navigate(`/posts/${post?.id}`)}
+          ></Button>
         </article>
       ))}
 

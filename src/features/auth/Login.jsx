@@ -18,7 +18,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { isLoading, data, error, fetchApi } = useFetchApi();
+  // const { isLoading, data, error, fetchApi } = useFetchApi();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -48,7 +48,7 @@ const Login = () => {
       {!isAuthenticated && (
         <>
           <h2>Login</h2>
-          {error && <p>{error}</p>}
+          {/* {error && <p>{error}</p>} */}
           <form
             onSubmit={handleLogin} //fic button no type="submit" ???
           >
@@ -77,7 +77,10 @@ const Login = () => {
               isLoading={status === "loading"}
               onClick={handleLogin}
             ></Button> */}
-            <button type="submit"></button>
+            <button type="submit">Login</button>
+            <p>
+              Don't have an account? <a href="/register">Register</a>
+            </p>
           </form>
         </>
       )}

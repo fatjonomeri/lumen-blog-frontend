@@ -4,6 +4,7 @@ import Register from "./features/auth/Register";
 import Login from "./features/auth/Login";
 import { Route, Routes } from "react-router-dom";
 import Homepage from "./features/homepage/Homepage";
+import PostDetails from "./features/post-details/PostDetails";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="login" element={<Login />} />
 
       <Route path="register" element={<Register />} />
+      <Route path="posts/:id" element={<PostDetails />} />
       {/* protected routes */}
     </Routes>
   );

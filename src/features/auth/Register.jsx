@@ -107,6 +107,9 @@ const Register = () => {
         isLoading={status === "loading"}
         onClick={handleRegister}
       ></Button>
+      <p>
+        Already have an account? <a href="/login">Login</a>
+      </p>
     </>
   );
 };

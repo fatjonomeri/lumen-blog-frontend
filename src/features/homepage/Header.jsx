@@ -6,11 +6,13 @@ import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useGetUserDetailsQuery } from "../auth/authApiSlice";
 import { useEffect } from "react";
-import { setCredentials } from "../auth/authSlice";
+import { logout, setCredentials } from "../auth/authSlice";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { userInfo, isAuthenticated } = useSelector((state) => state.auth);
+  const { userInfo, isAuthenticated, accessToken } = useSelector(
+    (state) => state.auth
+  );
   const dispatch = useDispatch();
 
   // automatically authenticate user if token is found
@@ -23,8 +25,12 @@ const Header = () => {
 
   useEffect(() => {
     refetch();
-    console.log("dispatching credentials");
-    if (data) dispatch(setCredentials(data));
+    if (data) {
+      dispatch(setCredentials(data));
+      console.log("dispatching credentials");
+    } else if (!accessToken) {
+      dispatch(logout());
+    }
   }, [data, dispatch]);
 
   // useEffect(() => {
