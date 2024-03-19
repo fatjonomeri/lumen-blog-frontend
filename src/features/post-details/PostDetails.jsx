@@ -1,4 +1,4 @@
-import { Button, InputText } from "@fattureincloud/fic-design-system";
+import { Button, InputText, TextArea } from "@fattureincloud/fic-design-system";
 import { useFetchApi } from "../../hooks/useFetchApi";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -57,7 +57,7 @@ const PostDetails = () => {
       {/* <Header /> */}
       <p>{data?.title}</p>
       <p>{data?.text}</p>
-      <InputText
+      <TextArea
         inputSize="large"
         inputType="text"
         label={<label>Comment</label>}
@@ -65,12 +65,12 @@ const PostDetails = () => {
         onChange={(e) => setNewComment(e.target.value)}
         status="normal"
         value={newComment}
-      ></InputText>
+      ></TextArea>
       <Button text="Add comment" onClick={handleSubmit}></Button>
       {comments.map((comment) => (
         <div style={{ border: "1px solid grey" }}>
           <p>{comment.text}</p>
-          {userInfo.id === comment.user.id && (
+          {userInfo?.id === comment.user.id && (
             <>
               <Button
                 text="Edit"

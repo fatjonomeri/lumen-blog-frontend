@@ -15,20 +15,21 @@ const Header = () => {
   );
   const dispatch = useDispatch();
 
-  const { data, isFetching, refetch } = useGetUserDetailsQuery("userDetails", {
-    pollingInterval: 900000,
-  });
-
-  console.log(data);
+  const { data, isFetching, refetch, error } = useGetUserDetailsQuery(
+    "userDetails",
+    {
+      pollingInterval: 900000,
+    }
+  );
 
   useEffect(() => {
-    refetch();
+    // refetch();
     if (data) {
       dispatch(setCredentials(data));
-    } else if (!accessToken) {
+    } else if (error) {
       dispatch(logout());
     }
-  }, [data, dispatch]);
+  }, [data, dispatch, error]);
 
   return (
     <>
