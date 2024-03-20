@@ -20,7 +20,9 @@ const Navbar = styled.div`
   background-color: white;
   z-index: 999;
   display: flex;
-  justify-content: flex-end;
+  // height: 30px;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const ModalWrapper = styled(Card)`
@@ -40,9 +42,20 @@ const ModalWrapper = styled(Card)`
 `;
 
 const AvatarWrapper = styled.div`
+  margin: 5px 20px;
   &:hover div {
     display: block;
+    z-index: 999;
   }
+`;
+
+const HomeButton = styled(Button)`
+  left: 0;
+`;
+
+const Flex = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
 
 const Header = () => {
@@ -72,35 +85,54 @@ const Header = () => {
   }, [data, dispatch]);
 
   return (
-    <Navbar>
+    <Navbar elevation={1}>
+      <HomeButton
+        text="Home"
+        type="text"
+        onClick={() => navigate("/")}
+      ></HomeButton>
       {isAuthenticated ? (
-        <>
+        <Flex>
           <Logout />
           {userInfo?.picture ? (
-            <>
-              <AvatarWrapper onMouseOver={() => setOpenProfileModal(true)}>
-                <Avatar size={32} image={userInfo.picture} randomColor />
-                <ModalWrapper
-                  open={openProfileModal}
-                  elevation="1"
-                  type="secondary"
-                  color="grey"
-                >
-                  <p>{userInfo?.full_name}</p>
-                  <p>{userInfo?.email}</p>
-                  <p>{userInfo?.first_name}</p>
-                  <p>{userInfo?.last_name}</p>
-                </ModalWrapper>
-              </AvatarWrapper>
-            </>
+            <AvatarWrapper onMouseOver={() => setOpenProfileModal(true)}>
+              <Avatar size={32} image={userInfo.picture} randomColor />
+              <ModalWrapper
+                id="profile-modal"
+                open={openProfileModal}
+                elevation="1"
+                type="secondary"
+                color="grey"
+              >
+                <p>{userInfo?.full_name}</p>
+                <p>{userInfo?.email}</p>
+                <p>{userInfo?.first_name}</p>
+                <p>{userInfo?.last_name}</p>
+              </ModalWrapper>
+            </AvatarWrapper>
           ) : (
-            <div>
+            <AvatarWrapper onMouseOver={() => setOpenProfileModal(true)}>
               <Avatar size={32} text={userInfo?.full_name} randomColor />
-            </div>
+              <ModalWrapper
+                open={openProfileModal}
+                elevation="1"
+                type="secondary"
+                color="grey"
+              >
+                <p>{userInfo?.full_name}</p>
+                <p>{userInfo?.email}</p>
+                <p>{userInfo?.first_name}</p>
+                <p>{userInfo?.last_name}</p>
+              </ModalWrapper>
+            </AvatarWrapper>
           )}
-        </>
+        </Flex>
       ) : (
-        <Button onClick={() => navigate("/login")} text={"Login"}></Button>
+        <Button
+          onClick={() => navigate("/login")}
+          text={"Login"}
+          type="text"
+        ></Button>
       )}
     </Navbar>
   );

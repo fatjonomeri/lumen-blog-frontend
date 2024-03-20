@@ -25,6 +25,7 @@ const Login = () => {
 
   useEffect(() => {
     inputRef.current?.focus();
+    console.log(inputRef.current);
   }, []);
 
   const handleLogin = async (e) => {
@@ -58,10 +59,10 @@ const Login = () => {
                 required
                 inputSize="large"
                 value={email}
-                status={error?.email.length > 0 ? "error" : "normal"}
+                status={error?.email?.length > 0 ? "error" : "normal"}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              {error?.email.length > 0 && (
+              {error?.email?.length > 0 && (
                 <InputHelper
                   icon={{
                     icon: {
@@ -86,11 +87,11 @@ const Login = () => {
                 inputSize="large"
                 label="Password:"
                 required
-                status={error?.password.length > 0 ? "error" : "normal"}
+                status={error?.password?.length > 0 ? "error" : "normal"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {error?.password.length > 0 && (
+              {error?.password?.length > 0 && (
                 <InputHelper
                   icon={{
                     icon: {

@@ -1,12 +1,17 @@
-import { Avatar, Button, Card } from "@fattureincloud/fic-design-system";
-import React, { useState } from "react";
+import {
+  Avatar,
+  Button,
+  Card,
+  TextArea,
+} from "@fattureincloud/fic-design-system";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewPost, deletePost, fetchPosts, updatePost } from "./postsSlice";
 import Modal from "@mui/material/Modal";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Box, Grid } from "@mui/material";
-import { FormTitle } from "../auth/styles/LoginStyles";
+import { FormTitle, InputWrapper } from "../auth/styles/LoginStyles";
 import { format } from "date-fns";
 import dateFormat from "dateformat";
 
@@ -20,6 +25,7 @@ const AddNewButton = styled(Button)`
 `;
 
 const PostCard = styled(Card)`
+  background-color: rgb(255, 255, 255) !important;
   height: 400px;
   padding: 20px;
   border: 2px solid #fafafa !important;
@@ -58,6 +64,22 @@ const PostUser = styled.div`
   }
 `;
 
+const ModalCard = styled(Card)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+`;
+
+export const InputAreaWrapper = styled(TextArea)`
+  align-items: flex-start;
+  & > div {
+    width: 100%;
+    margin-bottom: 6px;
+  }
+`;
+
 const PostList = () => {
   const { status, posts, error } = useSelector((state) => state.posts);
   const { userInfo, accessToken, isAuthenticated } = useSelector(
@@ -65,6 +87,7 @@ const PostList = () => {
   );
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const inputAddRef = useRef(null);
 
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -83,6 +106,16 @@ const PostList = () => {
 
     dispatch(addNewPost({ body, accessToken }));
   };
+
+  const handleAddNewClick = () => {
+    setOpenAddModal(true);
+    inputAddRef.current?.focus();
+  };
+
+  useEffect(() => {
+    inputAddRef.current?.focus();
+    console.log(inputAddRef.current);
+  }, [openAddModal]);
 
   const handleEditModal = (title, text, id) => {
     setPostIdToEdit(id);
@@ -106,7 +139,7 @@ const PostList = () => {
         <AddNewButton
           text="ADD NEW"
           color="green"
-          onClick={() => setOpenAddModal(true)}
+          onClick={() => handleAddNewClick()}
         ></AddNewButton>
       )}
       <Grid container spacing={3}>
@@ -117,20 +150,20 @@ const PostList = () => {
             md={4}
             key={post.id} // Make sure to add a unique key
           >
-            <PostCard elevation="1" color="grey" type="secondary">
+            <PostCard elevation="1" color="blue" type="secondary">
               <PostHeader>
                 <PostTitle>{post.title}</PostTitle>
                 <PostContent>{post.text.substring(0, 125)}...</PostContent>
-                {userInfo?.picture ? (
+                {post.user?.picture ? (
                   <PostUser>
                     <Avatar size={32} image={post.user.picture} randomColor />
                     <p>{post.user.full_name}</p>
                   </PostUser>
                 ) : (
-                  <>
+                  <PostUser>
                     <Avatar size={32} text={post.user.full_name} randomColor />
                     <p>{post.user.full_name}</p>
-                  </>
+                  </PostUser>
                 )}
 
                 <PostDate>
@@ -167,55 +200,67 @@ const PostList = () => {
         ))}
       </Grid>
       <Modal open={openAddModal} onClose={() => setOpenAddModal(false)}>
-        <div>
+        <ModalCard elevation="1" color="grey" type="secondary">
+          <FormTitle>Add new post</FormTitle>
           <form>
-            <div>
-              <label htmlFor="title">Title:</label>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="text">Text:</label>
-              <input
-                type="text"
-                id="text"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-              />
-            </div>
+            <InputWrapper
+              inputType="text"
+              id="title"
+              ref={inputAddRef}
+              label="Title:"
+              required
+              inputSize="large"
+              value={title}
+              // status={error?.email?.length > 0 ? "error" : "normal"}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+
+            <InputAreaWrapper
+              inputType="text"
+              id="text"
+              label="Text:"
+              required
+              inputSize="large"
+              value={text}
+              // status={error?.email?.length > 0 ? "error" : "normal"}
+              onChange={(e) => setText(e.target.value)}
+            />
             <Button text="Submit" onClick={handleSubmit}></Button>
           </form>
-        </div>
+        </ModalCard>
       </Modal>
 
       <Modal open={openEditModal} onClose={() => setOpenEditModal(false)}>
-        <div>
+        <ModalCard elevation="1" color="grey" type="secondary">
+          <FormTitle>Edit post</FormTitle>
           <form>
-            <div>
-              <label htmlFor="title">Title:</label>
-              <input
-                type="text"
-                id="title"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="text">Text:</label>
-              <input
-                type="text"
-                id="text"
-                value={editText}
-                onChange={(e) => setEditText(e.target.value)}
-              />
-            </div>
+            <InputWrapper
+              inputType="text"
+              id="title"
+              ref={inputAddRef}
+              label="Title:"
+              required
+              inputSize="large"
+              value={editTitle}
+              isPrefilled={true}
+              // status={error?.email?.length > 0 ? "error" : "normal"}
+              onChange={(e) => setEditTitle(e.target.value)}
+            />
+
+            <InputAreaWrapper
+              inputType="text"
+              id="text"
+              label="Text:"
+              required
+              inputSize="large"
+              value={editText}
+              isPrefilled={true}
+              // status={error?.email?.length > 0 ? "error" : "normal"}
+              onChange={(e) => setEditText(e.target.value)}
+            />
             <Button text="Submit" onClick={handleEditSubmit}></Button>
           </form>
-        </div>
+        </ModalCard>
       </Modal>
     </div>
   );

@@ -10,8 +10,8 @@ const Logout = () => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
+    dispatch(logout());
     // dispatch(userLogout(accessToken));
-    dispatch(userLogout(accessToken));
   };
   return (
     <Button
