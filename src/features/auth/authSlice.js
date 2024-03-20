@@ -15,8 +15,8 @@ export const userRegister = createAsyncThunk(
       };
       await axios.post(`${backendURL}/auth/register`, body, config);
     } catch (error) {
-      if (error.response && error.response.data.message) {
-        return rejectWithValue(error.response.data.message);
+      if (error.response) {
+        return rejectWithValue(error.response.data);
       } else {
         return rejectWithValue(error.message);
       }
@@ -28,7 +28,6 @@ export const userLogin = createAsyncThunk(
   "auth/login",
   async (body, { rejectWithValue }) => {
     try {
-      // configure header's Content-Type as JSON
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -42,8 +41,34 @@ export const userLogin = createAsyncThunk(
       localStorage.setItem("accessToken", data.access_token);
       return data;
     } catch (error) {
-      if (error.response && error.response.data.message) {
-        return rejectWithValue(error.response.data.message);
+      if (error.response) {
+        return rejectWithValue(error.response.data);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+export const userLogout = createAsyncThunk(
+  "auth/logout",
+  async (accessToken, { rejectWithValue }) => {
+    const body = new FormData();
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
+      const { data } = await axios.post(
+        `${backendURL}/auth/logout`,
+        body,
+        config
+      );
+      return data;
+    } catch (error) {
+      if (error.response) {
+        return rejectWithValue(error.response.data);
       } else {
         return rejectWithValue(error.message);
       }
@@ -94,13 +119,24 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(userLogin.fulfilled, (state, action) => {
-        console.log("🚀 ~ .addCase ~ action:", action);
         state.status = "succeeded";
         // state.userInfo = action.payload;
         state.accessToken = action.payload.access_token;
         state.isAuthenticated = true;
       })
       .addCase(userLogin.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(userLogout.fulfilled, (state, action) => {
+        localStorage.removeItem("accessToken");
+        state.status = "idle";
+        state.userInfo = null;
+        state.accessToken = null;
+        state.error = null;
+        state.isAuthenticated = false;
+      })
+      .addCase(userLogout.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

@@ -1,9 +1,62 @@
-import { Button } from "@fattureincloud/fic-design-system";
+import { Avatar, Button, Card } from "@fattureincloud/fic-design-system";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewPost, deletePost, fetchPosts, updatePost } from "./postsSlice";
 import Modal from "@mui/material/Modal";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { Box, Grid } from "@mui/material";
+import { FormTitle } from "../auth/styles/LoginStyles";
+import { format } from "date-fns";
+import dateFormat from "dateformat";
+
+const AddNewButton = styled(Button)`
+  position: fixed !important;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 50% !important;
+  width: 60px !important;
+  height: 60px;
+`;
+
+const PostCard = styled(Card)`
+  height: 400px;
+  padding: 20px;
+  border: 2px solid #fafafa !important;
+  &:hover {
+    border: 2px solid rgb(13, 151, 213) !important;
+  }
+`;
+
+const PostTitle = styled(FormTitle)`
+  height: 20%;
+`;
+
+const PostHeader = styled.div`
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+const PostContent = styled.p`
+  height: 30%;
+`;
+
+const PostDate = styled.h5`
+  margin-bottom: 0;
+  color: grey;
+`;
+
+const PostUser = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  & > p {
+    margin-left: 5px;
+  }
+`;
 
 const PostList = () => {
   const { status, posts, error } = useSelector((state) => state.posts);
@@ -48,41 +101,71 @@ const PostList = () => {
   };
 
   return (
-    <div>
+    <div style={{ paddingTop: "35px" }}>
       {isAuthenticated && (
-        <Button
+        <AddNewButton
           text="ADD NEW"
           color="green"
           onClick={() => setOpenAddModal(true)}
-        ></Button>
+        ></AddNewButton>
       )}
-      {posts.map((post) => (
-        <article key={post.id} style={{ border: "1px solid grey" }}>
-          <h2>{post.title}</h2>
-          <p>{post.text.substring(0, 75)}...</p>
-          <p>{post.comments_count} comments</p>
-          {userInfo?.id === post.user.id && (
-            <>
-              <Button
-                text="Edit"
-                onClick={() => handleEditModal(post.title, post.text, post.id)}
-              ></Button>
-              <Button
-                text="Remove"
-                color="red"
-                onClick={() =>
-                  dispatch(deletePost({ id: post.id, accessToken }))
-                }
-              ></Button>
-            </>
-          )}
-          <Button
-            text="Details"
-            onClick={() => navigate(`/posts/${post?.id}`)}
-          ></Button>
-        </article>
-      ))}
+      <Grid container spacing={3}>
+        {posts.map((post) => (
+          <Grid
+            item
+            xs={12}
+            md={4}
+            key={post.id} // Make sure to add a unique key
+          >
+            <PostCard elevation="1" color="grey" type="secondary">
+              <PostHeader>
+                <PostTitle>{post.title}</PostTitle>
+                <PostContent>{post.text.substring(0, 125)}...</PostContent>
+                {userInfo?.picture ? (
+                  <PostUser>
+                    <Avatar size={32} image={post.user.picture} randomColor />
+                    <p>{post.user.full_name}</p>
+                  </PostUser>
+                ) : (
+                  <>
+                    <Avatar size={32} text={post.user.full_name} randomColor />
+                    <p>{post.user.full_name}</p>
+                  </>
+                )}
 
+                <PostDate>
+                  {dateFormat(post.created_at, "dddd, mmmm dS, yyyy")}
+                </PostDate>
+              </PostHeader>
+              <p>{post.comments_count} comments</p>
+              {userInfo?.id === post.user.id && (
+                <>
+                  <Button
+                    type="text"
+                    text="Edit"
+                    onClick={() =>
+                      handleEditModal(post.title, post.text, post.id)
+                    }
+                  ></Button>
+                  <Button
+                    type="text"
+                    text="Remove"
+                    color="red"
+                    onClick={() =>
+                      dispatch(deletePost({ id: post.id, accessToken }))
+                    }
+                  ></Button>
+                </>
+              )}
+              <Button
+                type="text"
+                text="Details"
+                onClick={() => navigate(`/posts/${post?.id}`)}
+              ></Button>
+            </PostCard>
+          </Grid>
+        ))}
+      </Grid>
       <Modal open={openAddModal} onClose={() => setOpenAddModal(false)}>
         <div>
           <form>

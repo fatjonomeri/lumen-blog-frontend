@@ -1,7 +1,7 @@
 // import { useState } from 'react'
 import "./App.css";
-import Register from "./features/auth/Register";
-import Login from "./features/auth/Login";
+import Register from "./features/auth/containers/Register";
+import Login from "./features/auth/containers/Login";
 import { Route, Routes } from "react-router-dom";
 import Homepage from "./features/homepage/Homepage";
 import PostDetails from "./features/post-details/PostDetails";
