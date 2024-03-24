@@ -1,88 +1,34 @@
-import { Avatar, Button, Card } from "@fattureincloud/fic-design-system";
+import { Avatar, Button } from "@fattureincloud/fic-design-system";
 import Logout from "../auth/Logout";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useGetUserDetailsQuery } from "../auth/authApiSlice";
 import { useEffect } from "react";
-import { logout, setCredentials, userLogout } from "../auth/authSlice";
-import styled from "styled-components";
-import { Modal } from "@mui/material";
-
-const Navbar = styled.div`
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: white;
-  z-index: 999;
-  display: flex;
-  // height: 30px;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const ModalWrapper = styled(Card)`
-  display: none;
-  width: 130px;
-  padding: 10px;
-  font-size: 0.75em;
-  text-align: left;
-  background-color: inherit;
-  border-radius: 10px;
-  border: 1px solid black;
-  position: absolute;
-  top: 100%;
-  right: 0%;
-  // margin-left: -75px;
-  margin-top: 10px;
-`;
-
-const AvatarWrapper = styled.div`
-  margin: 5px 20px;
-  &:hover div {
-    display: block;
-    z-index: 999;
-  }
-`;
-
-const HomeButton = styled(Button)`
-  left: 0;
-`;
-
-const Flex = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
+import { logout, checkToken } from "../auth/authSlice";
+import {
+  AvatarWrapper,
+  Flex,
+  HomeButton,
+  ModalWrapper,
+  Navbar,
+} from "./styles/HomepageStyles";
 
 const Header = () => {
   const [openProfileModal, setOpenProfileModal] = useState(false);
 
   const navigate = useNavigate();
-  const { userInfo, isAuthenticated, accessToken } = useSelector(
+  const { userInfo, isAuthenticated, accessToken, status } = useSelector(
     (state) => state.auth
   );
   const dispatch = useDispatch();
 
-  const { data, isFetching, refetch, error } = useGetUserDetailsQuery(
-    "userDetails",
-    {
-      pollingInterval: 900000,
-    }
-  );
+  useEffect(() => {
+    dispatch(checkToken(accessToken));
+  }, [accessToken]);
 
   useEffect(() => {
-    refetch();
-    if (data) {
-      dispatch(setCredentials(data));
-    } else if (error) {
-      console.log("🚀 ~ useEffect ~ error:", error);
-      dispatch(logout());
-    }
-  }, [data, dispatch]);
+    if (status === "failed") dispatch(logout());
+  }, [status]);
 
   return (
     <Navbar elevation={1}>

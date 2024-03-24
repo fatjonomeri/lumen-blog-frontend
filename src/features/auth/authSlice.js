@@ -50,6 +50,27 @@ export const userLogin = createAsyncThunk(
   }
 );
 
+export const checkToken = createAsyncThunk(
+  "auth/me",
+  async (accessToken, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
+      const { data } = await axios.get(`${backendURL}/auth/me`, config);
+      return data;
+    } catch (error) {
+      if (error.response) {
+        return rejectWithValue(error.response.data);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
 export const userLogout = createAsyncThunk(
   "auth/logout",
   async (accessToken, { rejectWithValue }) => {
@@ -137,6 +158,20 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       })
       .addCase(userLogout.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(checkToken.pending, (state, action) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(checkToken.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // state.userInfo = action.payload;
+        state.userInfo = action.payload;
+        state.isAuthenticated = true;
+      })
+      .addCase(checkToken.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

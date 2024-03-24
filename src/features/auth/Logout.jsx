@@ -11,7 +11,7 @@ const Logout = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    // dispatch(userLogout(accessToken));
+    dispatch(userLogout(accessToken));
   };
   return (
     <Button

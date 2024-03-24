@@ -3,8 +3,8 @@ import "./App.css";
 import Register from "./features/auth/containers/Register";
 import Login from "./features/auth/containers/Login";
 import { Route, Routes } from "react-router-dom";
-import Homepage from "./features/homepage/Homepage";
-import PostDetails from "./features/post-details/PostDetails";
+import Homepage from "./features/homepage/containers/Homepage";
+import PostDetails from "./features/post-details/containers/PostDetails";
 
 function App() {
   return (

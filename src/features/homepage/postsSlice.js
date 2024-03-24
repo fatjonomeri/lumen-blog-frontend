@@ -14,15 +14,27 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   return response.data;
 });
 
-export const addNewPost = createAsyncThunk("posts/addNewPost", async (args) => {
-  const { body, accessToken } = args;
-  const response = await axios.post(POSTS_URL, body, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-  return response.data;
-});
+export const addNewPost = createAsyncThunk(
+  "posts/addNewPost",
+  async (args, { rejectWithValue }) => {
+    const { body, accessToken } = args;
+    try {
+      const response = await axios.post(POSTS_URL, body, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log("🚀 ~ addNewPost ~ response:", response);
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        return rejectWithValue(error.response.data);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
 
 export const deletePost = createAsyncThunk("posts/deletePost", async (args) => {
   const { id, accessToken } = args;
@@ -52,7 +64,12 @@ export const updatePost = createAsyncThunk("posts/updatePost", async (args) => {
 const postsSlice = createSlice({
   name: "posts",
   initialState,
-  reducers: {},
+  reducers: {
+    clearError: (state, { payload }) => {
+      // delete state.error.payload;
+      state.error[payload] = null;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchPosts.pending, (state, action) => {
@@ -77,6 +94,14 @@ const postsSlice = createSlice({
         state.status = "succeeded";
         state.posts.push(action.payload);
       })
+      .addCase(addNewPost.pending, (state, action) => {
+        state.status = "pending";
+      })
+      .addCase(addNewPost.rejected, (state, action) => {
+        console.log(action);
+        state.status = "failed";
+        state.error = action.payload;
+      })
       .addCase(updatePost.fulfilled, (state, action) => {
         state.status = "succeeded";
         const { id } = action.payload;
@@ -93,6 +118,6 @@ export const getPostsError = (state) => state.posts.error;
 export const selectPostById = (state, postId) =>
   state.posts.posts.find((post) => post.id === postId);
 
-// export const { postAdded } = postsSlice.actions;
+export const { clearError } = postsSlice.actions;
 
 export default postsSlice.reducer;
