@@ -32,11 +32,11 @@ const CommentRecursion = ({
   const dispatch = useDispatch();
   const renderReplies = () => {
     if (!comment.replies) return null;
-    console.log(comment);
     return comment.replies.map((replyId) => {
       const replyComment = allComments.find(
         (comment) => comment.id === replyId
       );
+      console.log(replyComment);
       return (
         <CommentRecursion
           key={replyComment.id}

@@ -37,8 +37,9 @@ const Register: React.FC = () => {
 
     dispatch(userRegister(formdata)).then((r) => {
       if (!r.error) {
-        dispatch(userLogin(formdataLogin));
-        navigate("/");
+        dispatch(userLogin(formdataLogin)).then((r) => {
+          if (!r.error) navigate("/");
+        });
       }
     });
   };
