@@ -1,10 +1,10 @@
 // import { useState } from 'react'
 import "./App.css";
-import Register from "./features/auth/containers/Register";
-import Login from "./features/auth/containers/Login";
+import Register from "./features/auth/containers/Register.tsx";
+import Login from "./features/auth/containers/Login.tsx";
 import { Route, Routes } from "react-router-dom";
-import Homepage from "./features/homepage/containers/Homepage";
-import PostDetails from "./features/post-details/containers/PostDetails";
+import Homepage from "./features/homepage/containers/Homepage.tsx";
+import PostDetails from "./features/post-details/containers/PostDetails.tsx";
 
 function App() {
   return (

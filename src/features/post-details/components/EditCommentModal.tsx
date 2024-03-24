@@ -1,9 +1,18 @@
-import { Button, Modal } from "@fattureincloud/fic-design-system";
+import { Button } from "@fattureincloud/fic-design-system";
 import React from "react";
 import { InputAreaWrapper, ModalCard } from "../styles/PostDetailsStyles";
 import { FormTitle } from "../../auth/styles/LoginStyles";
+import { Modal } from "@mui/material";
 
-const EditCommentModal = ({
+interface Props {
+  openEditModal: boolean;
+  setOpenEditModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditCommentText: React.Dispatch<React.SetStateAction<string>>;
+  editCommentText: string;
+  handleEditSubmit: () => void;
+}
+
+const EditCommentModal: React.FC<Props> = ({
   openEditModal,
   setOpenEditModal,
   setEditCommentText,
@@ -25,7 +34,9 @@ const EditCommentModal = ({
             value={editCommentText}
             isPrefilled={true}
             // status={error?.email?.length > 0 ? "error" : "normal"}
-            onChange={(e) => setEditCommentText(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEditCommentText(e.target.value)
+            }
           />
           <Button text="Submit" onClick={handleEditSubmit}></Button>
         </form>

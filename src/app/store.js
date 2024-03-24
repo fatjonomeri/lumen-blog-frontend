@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "../features/auth/authSlice";
-import postsReducer from "../features/homepage/postsSlice";
-import commentsReducer from "../features/post-details/commentsSlice";
+import authReducer from "../features/auth/authSlice.ts";
+import postsReducer from "../features/homepage/postsSlice.ts";
+import commentsReducer from "../features/post-details/commentsSlice.ts";
 import { authApi } from "../features/auth/authApiSlice";
 
 import { persistStore, persistReducer } from "redux-persist";

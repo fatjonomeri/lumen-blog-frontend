@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { userLogin } from "../authSlice";
+import { userLogin } from "../authSlice.ts";
 import { useNavigate } from "react-router-dom";
 import { InputHelper } from "@fattureincloud/fic-design-system";
 import {
@@ -11,16 +11,35 @@ import {
   InputWrapper,
 } from "../styles/LoginStyles";
 
-const Login = () => {
+interface RootState {
+  auth: {
+    status: string;
+    userInfo: UserInfo | null;
+    isAuthenticated: boolean;
+    error: { email: string[]; password: string[] } | null;
+  };
+}
+
+interface UserInfo {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  created_at: string;
+  full_name: string;
+  picture: string;
+}
+
+const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch();
 
   const { status, userInfo, isAuthenticated, error } = useSelector(
-    (state) => state.auth
+    (state: RootState) => state.auth
   );
 
   useEffect(() => {
@@ -28,7 +47,7 @@ const Login = () => {
     console.log(inputRef.current);
   }, []);
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const body = new FormData();
@@ -60,7 +79,9 @@ const Login = () => {
                 inputSize="large"
                 value={email}
                 status={error?.email?.length > 0 ? "error" : "normal"}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEmail(e.target.value)
+                }
               />
               {error?.email?.length > 0 && (
                 <InputHelper
@@ -89,7 +110,9 @@ const Login = () => {
                 required
                 status={error?.password?.length > 0 ? "error" : "normal"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPassword(e.target.value)
+                }
               />
               {error?.password?.length > 0 && (
                 <InputHelper

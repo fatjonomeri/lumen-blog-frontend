@@ -4,12 +4,28 @@ import {
   CommentUserInfo,
   PostDate,
   SingleComment,
-} from "../styles/PostDetailsStyles";
+} from "../styles/PostDetailsStyles.js";
 import dateFormat from "dateformat";
 import { useDispatch } from "react-redux";
-import { deleteComment } from "../commentsSlice";
+import { deleteComment } from "../commentsSlice.ts";
+import { Comment } from "../commentsSlice.ts";
+import { UserInfo } from "../../auth/authSlice.ts";
 
-const Comment = ({ comments, userInfo, handleEditModal, accessToken, id }) => {
+interface Props {
+  comments: Comment[];
+  userInfo: UserInfo | null;
+  handleEditModal: (text: string, id: string) => void;
+  accessToken: string | null;
+  id: string | undefined;
+}
+
+const CommentComponent: React.FC<Props> = ({
+  comments,
+  userInfo,
+  handleEditModal,
+  accessToken,
+  id,
+}) => {
   const dispatch = useDispatch();
 
   return (
@@ -58,4 +74,4 @@ const Comment = ({ comments, userInfo, handleEditModal, accessToken, id }) => {
   );
 };
 
-export default Comment;
+export default CommentComponent;

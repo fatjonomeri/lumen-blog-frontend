@@ -1,12 +1,10 @@
 import { Button } from "@fattureincloud/fic-design-system";
 import React from "react";
-import { logout, userLogout } from "./authSlice";
+import { RootState, logout, userLogout } from "./authSlice.ts";
 import { useDispatch, useSelector } from "react-redux";
 
-const Logout = () => {
-  const { userInfo, isAuthenticated, accessToken } = useSelector(
-    (state) => state.auth
-  );
+const Logout: React.FC = () => {
+  const { accessToken } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
   const handleLogout = () => {
@@ -14,6 +12,7 @@ const Logout = () => {
     dispatch(userLogout(accessToken));
   };
   return (
+    // @ts-ignore
     <Button
       onClick={handleLogout}
       text={"Logout"}

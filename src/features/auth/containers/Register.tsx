@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { userLogin, userRegister } from "../authSlice.js";
+import { RootState, userLogin, userRegister } from "../authSlice.ts";
 import { useNavigate } from "react-router-dom";
 import {
   ButtonWrapper,
@@ -9,21 +9,21 @@ import {
   FooterWrapper,
   FormTitle,
   InputWrapper,
-} from "../styles/LoginStyles";
+} from "../styles/LoginStyles.js";
 
-const Register = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+const Register: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
 
-  const { status, userInfo, error, isAuthenticated } = useSelector(
-    (state) => state.auth
+  const { status, error, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth
   );
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const formdata = new FormData();
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleRegister = () => {
     formdata.append("email", email);
@@ -35,12 +35,12 @@ const Register = () => {
     formdataLogin.append("email", email);
     formdataLogin.append("password", password);
 
-    dispatch(userRegister(formdata));
-
-    if (status === " succeeded") {
-      dispatch(userLogin(formdataLogin));
-      navigate("/");
-    }
+    dispatch(userRegister(formdata)).then((r) => {
+      if (!r.error) {
+        dispatch(userLogin(formdataLogin));
+        navigate("/");
+      }
+    });
   };
 
   useEffect(() => {
@@ -66,7 +66,9 @@ const Register = () => {
             label="First Name"
             // placeholder="First Name"
             required
-            onChange={(e) => setFirstName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFirstName(e.target.value)
+            }
             status={error?.first_name?.length > 0 ? "error" : "normal"}
             value={firstName}
           />
@@ -77,7 +79,9 @@ const Register = () => {
             label="Last Name"
             // placeholder="Last Name"
             required
-            onChange={(e) => setLastName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setLastName(e.target.value)
+            }
             status={error?.last_name?.length > 0 ? "error" : "normal"}
             value={lastName}
           />
@@ -87,7 +91,9 @@ const Register = () => {
             label={<label>Email</label>}
             // placeholder="Email"
             required
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
             status={error?.email.length > 0 ? "error" : "normal"}
             value={email}
           />
@@ -98,7 +104,9 @@ const Register = () => {
             label="Password"
             // placeholder="Password"
             required
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
             status={error?.password.length > 0 ? "error" : "normal"}
             value={password}
           />

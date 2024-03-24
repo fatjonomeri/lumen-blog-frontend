@@ -4,7 +4,20 @@ import { InputAreaWrapper, ModalCard } from "../styles/HomepageStyles";
 import { FormTitle, InputWrapper } from "../../auth/styles/LoginStyles";
 import { Modal } from "@mui/material";
 
-const AddPostModal = ({
+interface AddPostModalProps {
+  openAddModal: boolean;
+  title: string;
+  text: string;
+  error: any;
+  handleSubmit: (e) => void;
+  status: string;
+  handleTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setOpenAddModal: (open: boolean) => void;
+  inputAddRef: React.RefObject<HTMLInputElement>;
+}
+
+const AddPostModal: React.FC<AddPostModalProps> = ({
   openAddModal,
   title,
   text,
@@ -30,7 +43,9 @@ const AddPostModal = ({
             inputSize="large"
             value={title}
             // status={error?.email?.length > 0 ? "error" : "normal"}
-            onChange={(e) => handleTitleChange(e)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleTitleChange(e)
+            }
           />
           {error?.title?.length > 0 && (
             <InputHelper
@@ -51,7 +66,6 @@ const AddPostModal = ({
               status="error"
             />
           )}
-
           <InputAreaWrapper
             inputType="text"
             id="text"
@@ -60,7 +74,9 @@ const AddPostModal = ({
             inputSize="large"
             value={text}
             // status={error?.email?.length > 0 ? "error" : "normal"}
-            onChange={(e) => handleTextChange(e)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleTextChange(e)
+            }
           />
           {error?.text?.length > 0 && (
             <InputHelper
@@ -81,6 +97,7 @@ const AddPostModal = ({
               status="error"
             />
           )}
+
           <Button
             text="Submit"
             onClick={handleSubmit}

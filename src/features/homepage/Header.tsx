@@ -1,24 +1,24 @@
 import { Avatar, Button } from "@fattureincloud/fic-design-system";
-import Logout from "../auth/Logout";
+import Logout from "../auth/Logout.tsx";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { logout, checkToken } from "../auth/authSlice";
+import { logout, checkToken, RootState } from "../auth/authSlice.ts";
 import {
   AvatarWrapper,
   Flex,
   HomeButton,
   ModalWrapper,
   Navbar,
-} from "./styles/HomepageStyles";
+} from "./styles/HomepageStyles.js";
 
-const Header = () => {
-  const [openProfileModal, setOpenProfileModal] = useState(false);
+const Header: React.FC = () => {
+  const [openProfileModal, setOpenProfileModal] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const { userInfo, isAuthenticated, accessToken, status } = useSelector(
-    (state) => state.auth
+    (state: RootState) => state.auth
   );
   const dispatch = useDispatch();
 
@@ -74,6 +74,7 @@ const Header = () => {
           )}
         </Flex>
       ) : (
+        // @ts-ignore
         <Button
           onClick={() => navigate("/login")}
           text={"Login"}

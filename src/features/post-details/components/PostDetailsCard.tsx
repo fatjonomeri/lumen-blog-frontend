@@ -7,8 +7,9 @@ import {
 import { FormTitle } from "../../auth/styles/LoginStyles";
 import dateFormat from "dateformat";
 import { Avatar } from "@fattureincloud/fic-design-system";
+import { Post } from "../../homepage/postsSlice.ts";
 
-const PostDetailsCard = ({ data }) => {
+const PostDetailsCard: React.FC<Post> = ({ data }) => {
   return (
     <PostDetailCard elevation="1" color="blue" type="secondary">
       <FormTitle>{data?.title}</FormTitle>

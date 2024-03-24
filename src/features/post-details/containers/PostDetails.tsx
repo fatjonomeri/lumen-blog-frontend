@@ -1,19 +1,25 @@
 import { Button } from "@fattureincloud/fic-design-system";
-import { useFetchApi } from "../../../hooks/useFetchApi";
+import { useFetchApi } from "../../../hooks/useFetchApi.ts";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewComment, fetchComments, updateComment } from "../commentsSlice";
-import Header from "../../homepage/Header";
+import {
+  RootComments,
+  addNewComment,
+  fetchComments,
+  updateComment,
+} from "../commentsSlice.ts";
+import Header from "../../homepage/Header.tsx";
 import {
   AddCommentButtonDiv,
   CommentTextArea,
-} from "../styles/PostDetailsStyles";
-import Comment from "../components/Comment";
-import PostDetailsCard from "../components/PostDetailsCard";
-import EditCommentModal from "../components/EditCommentModal";
+} from "../styles/PostDetailsStyles.js";
+import CommentComponent from "../components/CommentComponent.tsx";
+import PostDetailsCard from "../components/PostDetailsCard.tsx";
+import EditCommentModal from "../components/EditCommentModal.tsx";
+import { RootState } from "../../auth/authSlice.ts";
 
-const PostDetails = () => {
+const PostDetails: React.FC = () => {
   const { id } = useParams();
 
   const { data, isLoading } = useFetchApi(`/posts/${id}`, "GET");
@@ -21,11 +27,13 @@ const PostDetails = () => {
   const [newComment, setNewComment] = useState("");
   const [openEditModal, setOpenEditModal] = useState(false);
   const [editCommentText, setEditCommentText] = useState("");
-  const [commentIdToEdit, setCommentIdToEdit] = useState(null);
+  const [commentIdToEdit, setCommentIdToEdit] = useState<string | null>(null);
 
-  const { status, comments, error } = useSelector((state) => state.comments);
+  const { status, comments } = useSelector(
+    (state: RootComments) => state.comments
+  );
   const { userInfo, accessToken, isAuthenticated } = useSelector(
-    (state) => state.auth
+    (state: RootState) => state.auth
   );
   const dispatch = useDispatch();
 
@@ -38,10 +46,14 @@ const PostDetails = () => {
     body.append("text", newComment);
     body.append("post_id", id);
 
-    dispatch(addNewComment({ id, body, accessToken }));
+    dispatch(addNewComment({ id, body, accessToken })).then((r) => {
+      if (!r.error) {
+        setNewComment("");
+      }
+    });
   };
 
-  const handleEditModal = (commentText, commentId) => {
+  const handleEditModal = (commentText: string, commentId: string) => {
     setCommentIdToEdit(commentId);
     setEditCommentText(commentText);
     setOpenEditModal(true);
@@ -55,8 +67,6 @@ const PostDetails = () => {
     setOpenEditModal(false);
   };
 
-  console.log(data);
-
   return (
     <div>
       <Header />
@@ -66,7 +76,9 @@ const PostDetails = () => {
         inputType="text"
         // label={<label>Comment</label>}
         placeholder="Add comment"
-        onChange={(e) => setNewComment(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setNewComment(e.target.value)
+        }
         status="normal"
         value={newComment}
       ></CommentTextArea>
@@ -78,7 +90,7 @@ const PostDetails = () => {
           isLoading={status === "pending"}
         ></Button>
       </AddCommentButtonDiv>
-      <Comment
+      <CommentComponent
         comments={comments}
         userInfo={userInfo}
         handleEditModal={handleEditModal}

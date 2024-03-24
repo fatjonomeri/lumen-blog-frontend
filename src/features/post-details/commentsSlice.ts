@@ -1,9 +1,47 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { UserInfo } from "../auth/authSlice.ts";
 
 const COMMENTS_URL = "http://localhost:8081/posts";
 
-const initialState = {
+export interface Comment {
+  id: number;
+  text: string;
+  created_at: string;
+  updated_at: string;
+  user: UserInfo
+}
+
+export interface CommentsState { 
+  comments: Comment[];
+  status: string;
+  error: {text: string[];  } | null;
+}
+
+export interface RootComments {
+  comments: CommentsState
+}
+
+interface AddNewCommentArgs {
+  id: string | undefined;
+  body: FormData;
+  accessToken: string | null;
+}
+
+interface DeleteCommentArgs {
+  id: string | undefined;
+  accessToken: string | null;
+  commentId: number;
+}
+
+interface UpdateCommentArgs {
+  id: string | undefined;
+  body: FormData;
+  accessToken: string | null;
+  commentIdToEdit: string | null;
+}
+
+const initialState: CommentsState = {
   comments: [],
   status: "idle", //'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
@@ -19,7 +57,7 @@ export const fetchComments = createAsyncThunk(
 
 export const addNewComment = createAsyncThunk(
   "comments/addNewComment",
-  async (args) => {
+  async (args: AddNewCommentArgs) => {
     const { id: postId, body, accessToken } = args;
     const response = await axios.post(
       `${COMMENTS_URL}/${postId}/comments`,
@@ -36,10 +74,8 @@ export const addNewComment = createAsyncThunk(
 
 export const deleteComment = createAsyncThunk(
   "comments/deleteComment",
-  async (args) => {
+  async (args: DeleteCommentArgs) => {
     const { id: postId, accessToken, commentId } = args;
-    console.log("🚀 ~ commentId:", commentId);
-    console.log("🚀 ~ accessToken:", accessToken);
     try {
       const response = await axios.delete(
         `${COMMENTS_URL}/${postId}/comments/${commentId}`,
@@ -59,7 +95,7 @@ export const deleteComment = createAsyncThunk(
 
 export const updateComment = createAsyncThunk(
   "comments/updateComment",
-  async (args) => {
+  async (args: UpdateCommentArgs) => {
     const { id: postId, body, accessToken, commentIdToEdit: commentId } = args;
     const response = await axios.put(
       `${COMMENTS_URL}/${postId}/comments/${commentId}`,

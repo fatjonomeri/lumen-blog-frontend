@@ -1,29 +1,32 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewPost, clearError } from "./postsSlice";
-import { AddNewButton } from "./styles/HomepageStyles";
-import EditPostModal from "./components/EditPostModal";
-import AddPostModal from "./components/AddPostModal";
-import PostsGrid from "./components/PostsGrid";
+import { addNewPost, clearError, RootPosts } from "./postsSlice.ts";
+import { AddNewButton } from "./styles/HomepageStyles.js";
+import EditPostModal from "./components/EditPostModal.tsx";
+import AddPostModal from "./components/AddPostModal.tsx";
+import PostsGrid from "./components/PostsGrid.tsx";
+import { RootState } from "../auth/authSlice.ts";
 
 const PostList = () => {
-  const { status, posts, error } = useSelector((state) => state.posts);
+  const { posts, status, error } = useSelector(
+    (state: RootPosts) => state.posts
+  );
   const { userInfo, accessToken, isAuthenticated } = useSelector(
-    (state) => state.auth
+    (state: RootState) => state.auth
   );
   const dispatch = useDispatch();
   const inputAddRef = useRef(null);
   const inputEditRef = useRef(null);
 
-  const [openAddModal, setOpenAddModal] = useState(false);
-  const [title, setTitle] = useState("");
-  const [text, setText] = useState("");
+  const [openAddModal, setOpenAddModal] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>("");
+  const [text, setText] = useState<string>("");
 
-  const [openEditModal, setOpenEditModal] = useState(false);
-  const [editTitle, setEditTitle] = useState("");
-  const [editText, setEditText] = useState("");
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [editTitle, setEditTitle] = useState<string>("");
+  const [editText, setEditText] = useState<string>("");
 
-  const [postIdToEdit, setPostIdToEdit] = useState(null);
+  const [postIdToEdit, setPostIdToEdit] = useState<number | null>(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -52,12 +55,12 @@ const PostList = () => {
     }, 1);
   }, [openAddModal]);
 
-  const handleTitleChange = (e) => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
     dispatch(clearError("title"));
   };
 
-  const handleTextChange = (e) => {
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
     dispatch(clearError("text"));
   };

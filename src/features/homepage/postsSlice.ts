@@ -1,9 +1,50 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { UserInfo } from "../auth/authSlice.ts";
 
 const POSTS_URL = "http://localhost:8081/posts";
 
-const initialState = {
+
+export interface Post {
+  id: number;
+  title: string;
+  text: string;
+  created_at: string;
+  comments_count: number;
+  user: UserInfo
+}
+
+export interface postsState { 
+  posts: Post[];
+  status: string;
+  error: object | null
+}
+
+interface AddNewPostArgs {
+  body: FormData;
+  accessToken: string | null;
+}
+
+interface DeletePostArgs {
+  id: number;
+  accessToken: string | null;
+}
+
+interface UpdatePostArgs {
+  postIdToEdit: number | null;
+  body: FormData;
+  accessToken: string | null;
+}
+
+export interface RootPosts {
+  posts: {
+    posts: Post[];
+    status: string;
+    error: { title: string[]; text: string[];  } | null;
+  };
+}
+
+const initialState: postsState = {
   posts: [],
   status: "idle", //'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
@@ -16,7 +57,7 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
 
 export const addNewPost = createAsyncThunk(
   "posts/addNewPost",
-  async (args, { rejectWithValue }) => {
+  async (args: AddNewPostArgs, { rejectWithValue }) => {
     const { body, accessToken } = args;
     try {
       const response = await axios.post(POSTS_URL, body, {
@@ -24,7 +65,6 @@ export const addNewPost = createAsyncThunk(
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log("🚀 ~ addNewPost ~ response:", response);
       return response.data;
     } catch (error) {
       if (error.response) {
@@ -36,7 +76,7 @@ export const addNewPost = createAsyncThunk(
   }
 );
 
-export const deletePost = createAsyncThunk("posts/deletePost", async (args) => {
+export const deletePost = createAsyncThunk("posts/deletePost", async (args: DeletePostArgs) => {
   const { id, accessToken } = args;
   try {
     const response = await axios.delete(`${POSTS_URL}/${id}`, {
@@ -51,7 +91,7 @@ export const deletePost = createAsyncThunk("posts/deletePost", async (args) => {
   }
 });
 
-export const updatePost = createAsyncThunk("posts/updatePost", async (args) => {
+export const updatePost = createAsyncThunk("posts/updatePost", async (args: UpdatePostArgs) => {
   const { postIdToEdit: id, body, accessToken } = args;
   const response = await axios.put(`${POSTS_URL}/${id}`, body, {
     headers: {

@@ -1,9 +1,10 @@
+import { Post } from "../features/homepage/postsSlice.ts";
 import { useState, useEffect } from "react";
 
-export const useFetchApi = (endpoint, method) => {
-  const [data, setData] = useState(null);
+export const useFetchApi = (endpoint: string, method: string) => {
+  const [data, setData] = useState<Post | null>(null);
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
    const base_url = "http://localhost:8081";
   const url = base_url + endpoint;
@@ -18,7 +19,7 @@ export const useFetchApi = (endpoint, method) => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      const result = await response.json(); // Parse response data as JSON
+      const result: Post = await response.json(); // Parse response data as JSON
       setData(result);
       setIsLoading(false);
     } catch (error) {

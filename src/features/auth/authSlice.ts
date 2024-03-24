@@ -4,6 +4,26 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const backendURL = "http://localhost:8081";
 
+export interface RootState {
+  auth: {
+    status: string;
+    userInfo: UserInfo | null;
+    error: { first_name: string[]; last_name: string[]; email: string[]; password: string[] } | null;
+    isAuthenticated: boolean;
+    accessToken: string | null;
+  };
+}
+
+export interface UserInfo {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  created_at: string;
+  full_name: string;
+  picture: string;
+}
+
 export const userRegister = createAsyncThunk(
   "auth/register",
   async (body, { rejectWithValue }) => {

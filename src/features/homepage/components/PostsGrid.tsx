@@ -7,14 +7,28 @@ import {
   PostTitle,
   PostUser,
   PostDate,
-} from "../styles/HomepageStyles";
+} from "../styles/HomepageStyles.js";
 import { Avatar, Button } from "@fattureincloud/fic-design-system";
 import { useNavigate } from "react-router-dom";
 import dateFormat from "dateformat";
 import { useDispatch } from "react-redux";
-import { deletePost } from "../postsSlice";
+import { deletePost } from "../postsSlice.ts";
+import { UserInfo } from "../../auth/authSlice.ts";
+import { Post } from "../postsSlice.ts";
 
-const PostsGrid = ({ posts, userInfo, handleEditModal, accessToken }) => {
+interface PostsGridProps {
+  posts: Post[];
+  userInfo: UserInfo | null;
+  handleEditModal: (title: string, text: string, id: string) => void;
+  accessToken: string | null;
+}
+
+const PostsGrid: React.FC<PostsGridProps> = ({
+  posts,
+  userInfo,
+  handleEditModal,
+  accessToken,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

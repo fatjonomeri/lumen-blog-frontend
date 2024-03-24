@@ -10,7 +10,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { fetchPosts } from "./features/homepage/postsSlice.js";
+import { fetchPosts } from "./features/homepage/postsSlice.ts";
 
 store.dispatch(fetchPosts());
 
