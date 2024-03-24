@@ -94,7 +94,7 @@ const Register: React.FC = () => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setEmail(e.target.value)
             }
-            status={error?.email.length > 0 ? "error" : "normal"}
+            status={error?.email?.length > 0 ? "error" : "normal"}
             value={email}
           />
           <InputWrapper
@@ -107,7 +107,7 @@ const Register: React.FC = () => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword(e.target.value)
             }
-            status={error?.password.length > 0 ? "error" : "normal"}
+            status={error?.password?.length > 0 ? "error" : "normal"}
             value={password}
           />
         </form>

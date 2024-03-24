@@ -9,7 +9,9 @@ export interface Comment {
   text: string;
   created_at: string;
   updated_at: string;
-  user: UserInfo
+  user: UserInfo;
+  parent_id: number | null;
+  replies: number[] | null;
 }
 
 export interface CommentsState { 
@@ -26,6 +28,13 @@ interface AddNewCommentArgs {
   id: string | undefined;
   body: FormData;
   accessToken: string | null;
+}
+
+interface ReplyToCommentArgs {
+  id: string | undefined;
+  body: FormData;
+  accessToken: string | null;
+  commentIdToReply: number | null;
 }
 
 interface DeleteCommentArgs {
@@ -61,6 +70,23 @@ export const addNewComment = createAsyncThunk(
     const { id: postId, body, accessToken } = args;
     const response = await axios.post(
       `${COMMENTS_URL}/${postId}/comments`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data;
+  }
+);
+
+export const replyToComment = createAsyncThunk(
+  "comments/replyToComment",
+  async (args: ReplyToCommentArgs) => {
+    const { id: postId, body, accessToken, commentIdToReply } = args;
+    const response = await axios.post(
+      `${COMMENTS_URL}/${postId}/comments/${commentIdToReply}/reply`,
       body,
       {
         headers: {
@@ -137,6 +163,9 @@ const commentsSlice = createSlice({
         );
       })
       .addCase(addNewComment.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.comments.push(action.payload);
+      }).addCase(replyToComment.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.comments.push(action.payload);
       })

@@ -7,6 +7,7 @@ import {
   RootComments,
   addNewComment,
   fetchComments,
+  replyToComment,
   updateComment,
 } from "../commentsSlice.ts";
 import Header from "../../homepage/Header.tsx";
@@ -28,6 +29,9 @@ const PostDetails: React.FC = () => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [editCommentText, setEditCommentText] = useState("");
   const [commentIdToEdit, setCommentIdToEdit] = useState<string | null>(null);
+  const [replyCommentText, setReplyCommentText] = useState("");
+  const [commentIdToReply, setCommentIdToReply] = useState<number | null>(null);
+  const [openReplyModal, setOpenReplyModal] = useState(false);
 
   const { status, comments } = useSelector(
     (state: RootComments) => state.comments
@@ -67,6 +71,20 @@ const PostDetails: React.FC = () => {
     setOpenEditModal(false);
   };
 
+  const handleReplySubmit = () => {
+    const body = new FormData();
+    body.append("text", replyCommentText);
+
+    dispatch(replyToComment({ id, body, accessToken, commentIdToReply })).then(
+      (r) => {
+        if (!r.error) {
+          setReplyCommentText("");
+          setOpenReplyModal(false);
+        }
+      }
+    );
+  };
+
   return (
     <div>
       <Header />
@@ -96,6 +114,13 @@ const PostDetails: React.FC = () => {
         handleEditModal={handleEditModal}
         accessToken={accessToken}
         id={id}
+        isAuthenticated={isAuthenticated}
+        replyCommentText={replyCommentText}
+        setReplyCommentText={setReplyCommentText}
+        handleReplySubmit={handleReplySubmit}
+        setCommentIdToReply={setCommentIdToReply}
+        openReplyModal={openReplyModal}
+        setOpenReplyModal={setOpenReplyModal}
       />
 
       <EditCommentModal
